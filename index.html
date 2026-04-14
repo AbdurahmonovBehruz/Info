@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behruz Abdurahmonov | Premium Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Space Grotesk', system-ui, sans-serif;
+            background-color: #050505; /* Глубокий, дорогой черный цвет */
+        }
+
+        /* Премиальные карточки с отслеживанием мыши */
+        .glass-card {
+            background: rgba(20, 20, 20, 0.4);
+            border-radius: 1.5rem; /* 24px */
+            position: relative;
+            overflow: hidden;
+            /* Базовая невидимая рамка */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-12px); /* Значительный подъем */
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 30px 60px -15px rgba(168, 85, 247, 0.3); /* Аметистовое свечение внизу */
+        }
+
+        /* Эффект фона, следующий за курсором */
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(168, 85, 247, 0.04), /* Аметистовый свет-основа */
+                transparent 40%
+            );
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Подсветка рамки аметистовым неоном, следующая за курсором */
+        .glass-card::after {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 2px; /* Толщина рамки */
+            background: radial-gradient(
+                400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(168, 85, 247, 0.8), /* Аметист */
+                rgba(16, 185, 129, 0.8) 40%, /* Изумруд */
+                rgba(59, 130, 246, 0.6) 70%, /* Сапфир */
+                transparent 100%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .glass-card:hover::before,
+        .glass-card:hover::after {
+            opacity: 1;
+        }
+
+        /* Поднимаем контент карточки над свечением */
+        .glass-card > * {
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Специальная карточка Promo с градиентом */
+        .promo-card::after {
+            background: radial-gradient(
+                400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(6, 182, 212, 0.9), /* Бирюзовый свет */
+                rgba(168, 85, 247, 0.8) 30%, /* Аметистовый неон в середине */
+                transparent 50%
+            );
+        }
+
+        /* Сетка на фоне */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 30%, transparent 80%);
+        }
+    </style>
+</head>
+<body class="text-zinc-300 min-h-screen relative z-0 selection:bg-purple-500/30 selection:text-purple-200">
+    
+    <div id="loader" class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#050505]">
+
+    <div class="flex flex-col items-center gap-8">
+
+        <!-- Circle -->
+        <div class="relative w-40 h-40 flex items-center justify-center">
+
+            <!-- Background circle -->
+            <div class="absolute inset-0 rounded-full border border-red-500/10"></div>
+
+            <!-- Rotating ring -->
+            <div class="absolute inset-0 rounded-full border-2 border-transparent border-t-red-500 border-r-rose-400 animate-spin shadow-[0_0_25px_rgba(239,68,68,0.6)]"></div>
+
+            <!-- Glow ring -->
+            <div class="absolute inset-2 rounded-full border border-red-500/20 blur-sm"></div>
+
+            <!-- Percent -->
+            <div id="percent" class="text-xl font-mono text-red-400 tracking-widest">
+                0%
+            </div>
+
+        </div>
+
+        <!-- Text -->
+        <div id="loading-text" class="text-xs font-mono text-zinc-500 tracking-widest animate-pulse">
+            Initializing core...
+        </div>
+
+    </div>
+</div>
+    
+    <div class="fixed inset-0 z-[-1] pointer-events-none">
+        <div class="absolute inset-0 bg-grid"></div>
+        <div class="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-purple-900/20 blur-[150px] rounded-full opacity-60"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-blue-900/10 blur-[120px] rounded-full opacity-50"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+       
+        <div class="glass-card p-6 sm:p-8 mb-10 group">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-purple-500/10 to-zinc-900/50 flex items-center justify-center rounded-2xl text-5xl shadow-[0_0_30px_rgba(168, 85, 247, 0.15)] group-hover:shadow-[0_0_40px_rgba(168, 85, 247, 0.3)] transition-shadow duration-500 ring-1 ring-purple-500/20 shrink-0 overflow-hidden">
+                   🇺🇿
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-4">
+                        <span class="text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow-md">+998 90 007 81 18</span>
+                        <span class="px-3 py-1.5 bg-purple-500/10 text-purple-400 text-xs uppercase tracking-widest font-bold rounded-lg ring-1 ring-purple-500/30">Uzbekistan</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-medium text-zinc-200 mt-3 tracking-tight">Abdurahmonov Behruz</h1>
+                    <p class="text-zinc-500 flex items-center gap-2 mt-2 font-medium">
+                        <i class="fa-solid fa-cake-candles text-purple-500/50"></i>
+                        29.04.2011 <span class="bg-zinc-800/50 text-zinc-400 text-[11px] px-2 py-0.5 rounded-md ml-1 ring-1 ring-white/5 uppercase tracking-wide">14 Years</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
+
+            <div class="lg:col-span-5 space-y-8 relative">
+                
+                <div class="glass-card p-7 group">
+                    <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
+                        <i class="fa-solid fa-user-astronaut text-purple-500 group-hover:text-purple-400 transition-colors"></i>
+                        Personal Data
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-white/5 pb-4">
+                            <span class="text-zinc-500 text-sm">Nationality</span>
+                            <span class="font-medium text-zinc-100">Uzbek</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-white/5 pb-4">
+                            <span class="text-zinc-500 text-sm">Citizenship</span>
+                            <span class="font-medium text-zinc-100">Uzbekistan</span>
+                        </div>
+                        <div class="pt-2 relative">
+                            <div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 mb-3 font-bold">Primary Contact</div>
+                            <div class="flex items-center gap-4 bg-zinc-900/40 rounded-2xl p-4 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-colors relative">
+                                <div class="w-10 h-10 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 shrink-0 hover:scale-110 transition-transform shadow-[0_0_15px_rgba(168, 85, 247, 0.1)]">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-white tracking-wide">+998 90 007 81 18</div>
+                                    <div class="text-purple-500 text-xs font-semibold uppercase tracking-wider mt-1 group-hover:text-purple-400 transition-colors">Status: Active</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-7 group">
+                    <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
+                        <i class="fa-solid fa-envelope-open-text text-sky-400 group-hover:text-sky-300 transition-colors"></i>
+                        Communications
+                    </h2>
+                    <div class="space-y-3 relative">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-zinc-900/40 rounded-xl p-4 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-colors gap-2 relative">
+                            <div class="text-sm text-zinc-300 truncate font-medium">iamgamersans@gmail.com</div>
+                            <div class="bg-purple-500/10 text-purple-400 text-xs font-bold px-2.5 py-1 rounded-md shrink-0 ring-1 ring-purple-500/20 group-hover:bg-purple-500/20 transition-colors">66%</div>
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-zinc-900/40 rounded-xl p-4 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-colors gap-2 relativeOpacity-80 group">
+                            <div class="text-sm text-zinc-500 truncate group-hover:text-zinc-400 transition-colors">Behruzbekabdurakhmonov2011@gmail.com</div>
+                            <div class="bg-zinc-800 text-zinc-500 text-xs font-bold px-2.5 py-1 rounded-md shrink-0 ring-1 ring-white/5 group-hover:bg-zinc-700 transition-colors">34%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-7 group">
+                    <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
+                        <i class="fa-solid fa-location-crosshairs text-rose-500 group-hover:text-rose-400 transition-colors"></i>
+                        Locations
+                    </h2>
+                    <div class="space-y-4 relative">
+                        <div class="flex gap-4 items-start relative">
+                            <div class="w-2.5 h-2.5 rounded-full bg-purple-500 mt-1.5 shadow-[0_0_12px_rgba(168, 85, 247, 0.9)]"></div>
+                            <div>
+                                <div class="font-bold text-zinc-100 text-base">Fergana <span class="text-zinc-600 text-xs ml-2 font-medium">70%</span></div>
+                                <div class="text-sm text-zinc-500 mt-1">Yormazor</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start opacity-60 relative group">
+                            <div class="w-2.5 h-2.5 rounded-full bg-zinc-600 mt-1.5 group-hover:bg-purple-600 transition-colors shadow-none group-hover:shadow-[0_0_8px_rgba(168, 85, 247, 0.6)]"></div>
+                            <div>
+                                <div class="font-bold text-zinc-300 text-base group-hover:text-zinc-200 transition-colors">Qõshtepa <span class="text-zinc-600 text-xs ml-2 font-medium group-hover:text-zinc-500">30%</span></div>
+                                <div class="text-sm text-zinc-500 mt-1">near "Qõshtepa IM"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-7 space-y-8 relative">
+                
+                
+                
+                <div class="glass-card p-7 group">
+    <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
+        <i class="fa-solid fa-diagram-project text-purple-500 group-hover:text-purple-400 transition-colors"></i>
+        Projects
+    </h2><div class="space-y-4">
+
+    <!-- Project Card -->
+    <div class="bg-zinc-900/40 rounded-2xl p-5 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-all group relative overflow-hidden">
+        
+        <!-- Glow effect -->
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"
+             style="background: radial-gradient(400px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(168,85,247,0.15), transparent 60%);">
+        </div>
+
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            
+            <!-- Info -->
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-lg font-bold text-white">Leaderboard System</span>
+                    <span class="text-xs text-green-400 bg-green-500/10 px-2 py-0.5 rounded-md ring-1 ring-green-500/20">
+                        ● Active
+                    </span>
+                </div>
+
+                <p class="text-sm text-zinc-400 leading-relaxed max-w-md">
+                    A dynamic system for tracking and displaying user scores in real-time. 
+                    Built to handle ranking logic, updates, and performance efficiently.
+                </p>
+            </div>
+
+            <!-- Button -->
+            <a href="https://Abdurahmonovbehruz.github.io/Redirector" target="_blank"
+               class="shrink-0 flex items-center gap-2 bg-white text-black hover:bg-purple-400 hover:text-black font-bold py-2.5 px-5 rounded-xl transition-all duration-300 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(168,85,247,0.4)]">
+                
+                <span class="text-xs uppercase tracking-widest">Open</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</div>
+              
+                <div class="glass-card p-7 group">
+                    <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
+                        <i class="fa-solid fa-microchip text-purple-500 group-hover:text-purple-400 transition-colors"></i>
+                        Tech Stack & Skills
+                    </h2>
+                    <div class="flex flex-wrap gap-3 relative">
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-purple-500/50 hover:bg-purple-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-purple-300 font-medium cursor-default relative">IT</span>
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-purple-500/50 hover:bg-purple-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-purple-300 font-medium cursor-default relative">Math</span>
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-purple-500/50 hover:bg-purple-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-purple-300 font-medium cursor-default relative">Coding</span>
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-purple-500/50 hover:bg-purple-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-purple-300 font-medium cursor-default relative">Software Dev</span>
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-rose-500/50 hover:bg-rose-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-rose-300 font-medium cursor-default flex items-center gap-2 relative group">
+                            <i class="fa-solid fa-skull text-zinc-400 group-hover:text-rose-400 transition-colors"></i>
+                            Hacking
+                        </span>
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-rose-500/50 hover:bg-rose-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-rose-300 font-medium cursor-default flex items-center gap-2 relative group">
+                            <i class="fa-solid fa-shield-halved text-zinc-400 group-hover:text-rose-400 transition-colors"></i>
+                            Pentesting
+                        </span>
+                        <span class="px-4 py-2.5 bg-zinc-900/50 ring-1 ring-white/5 hover:ring-blue-500/50 hover:bg-blue-500/5 transition-all text-sm rounded-xl text-zinc-300 hover:text-blue-300 font-medium cursor-default relative">Deep analyzing</span>
+                        
+                        <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-3 relativeOpacity-20"></div>
+                        
+                        <span class="px-4 py-2 bg-zinc-900/30 ring-1 ring-white/5 text-sm rounded-xl flex items-center gap-2 text-zinc-400 cursor-default relative group">
+                            Russian <span class="text-purple-400 text-[10px] font-bold bg-purple-500/10 px-1.5 py-0.5 rounded ring-1 ring-purple-500/20 group-hover:bg-purple-500/20 transition-colors">100%</span>
+                        </span>
+                        <span class="px-4 py-2 bg-zinc-900/30 ring-1 ring-white/5 text-sm rounded-xl flex items-center gap-2 text-zinc-400 cursor-default relative group">
+                            English <span class="text-purple-400 text-[10px] font-bold bg-purple-500/10 px-1.5 py-0.5 rounded ring-1 ring-purple-500/20 group-hover:bg-purple-500/20 transition-colors">80%</span>
+                        </span>
+                        <span class="px-4 py-2 bg-zinc-900/30 ring-1 ring-white/5 text-sm rounded-xl flex items-center gap-2 text-zinc-500 opacity-60 cursor-default relative group hover:opacity-100 transition-opacity">
+                            German <span class="text-zinc-500 text-[10px] font-bold bg-zinc-800 px-1.5 py-0.5 rounded group-hover:bg-zinc-700 transition-colors">30%</span>
+                        </span>
+                        
+                        <span class="px-4 py-2 bg-zinc-900/30 ring-1 ring-white/5 hover:ring-white/10 hover:bg-zinc-800 transition-all text-sm rounded-xl text-zinc-400 hover:text-white cursor-default relative group">
+                            <span class="mr-2 group-hover:rotate-6 transition-transform relative inline-block">♟️</span> Chess
+                        </span>
+                        <span class="px-4 py-2 bg-zinc-900/30 ring-1 ring-white/5 hover:ring-white/10 hover:bg-zinc-800 transition-all text-sm rounded-xl text-zinc-400 hover:text-white cursor-default relative group">
+                            <span class="mr-2 group-hover:scale-110 transition-transform relative inline-block">🎮</span> Cybersport
+                        </span>
+                    </div>
+                </div>
+
+                <div class="glass-card promo-card p-[1px] group relative">
+                    <div class="bg-zinc-950/90 backdrop-blur-2xl rounded-[1.4rem] p-7 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-8 w-full h-full relative z-10">
+                        <div class="flex-1 text-center sm:text-left relative z-10">
+                            <h2 class="text-2xl font-bold mb-3 flex items-center justify-center sm:justify-start gap-3 text-white drop-shadow-md relative group">
+                                <i class="fa-solid fa-code text-purple-400 group-hover:text-purple-300 transition-colors relative z-10"></i>
+                                <span class="relative z-10 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-300 group-hover:to-cyan-200 transition-colors">Need a Website?</span>
+                            </h2>
+                            <p class="text-zinc-400 text-sm leading-relaxed max-w-md mx-auto sm:mx-0 relative z-10 group-hover:text-zinc-300 transition-colors">
+                                I build modern, high-performance websites. It is absolutely<span class="text-cyan-400 font-bold bg-cyan-500/10 px-2.5 py-1 rounded-md text-xs uppercase tracking-widest mx-1 ring-1 ring-cyan-500/30 group-hover:bg-cyan-500/20 transition-colors relative z-10">Free</span>. I'm doing it to improve my skills.
+                            </p>
+                        </div>
+                        <a href="https://t.me/Gamer_Sans" target="_blank" 
+                           class="shrink-0 flex items-center gap-3 bg-white text-black hover:bg-cyan-400 hover:text-black font-bold py-3.5 px-8 rounded-xl transition-all duration-300 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] group relative z-10">
+                            <span class="uppercase tracking-widest text-xs relative z-10">Contact Me</span>
+                            <i class="fa-brands fa-telegram text-lg group-hover:-translate-y-0.5 transition-transform relative z-10"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+                    <div class="glass-card p-7 group relative">
+                        <h2 class="text-xs font-bold mb-5 uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors relative z-10">Network</h2>
+                        <a href="https://t.me/Gamer_Sans" target="_blank" 
+                           class="flex items-center gap-4 bg-zinc-900/30 ring-1 ring-white/5 hover:ring-[#229ED9]/50 hover:bg-[#229ED9]/5 transition-all rounded-2xl p-4 group relative z-10">
+                            <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-2xl text-purple-400 group-hover:scale-110 transition-transform ring-1 ring-purple-500/20 group-hover:bg-purple-500/20 relative z-10 shadow-[0_0_15px_rgba(168, 85, 247, 0.1)] group-hover:shadow-[0_0_20px_rgba(168, 85, 247, 0.3)] transition-shadow">
+                                <i class="fa-brands fa-telegram text-sky-500 relative z-10"></i>
+                            </div>
+                            <div class="flex-1 min-w-0 relative z-10">
+                                <div class="font-bold text-zinc-200 text-sm truncate group-hover:text-white transition-colors relative z-10">@Gamer_Sans</div>
+                                <div class="text-zinc-500 text-xs font-mono mt-0.5 relative z-10 group-hover:text-zinc-400 Transition-colors">ID:1250910727</div>
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-zinc-600 group-hover:text-[#229ED9] group-hover:-translate-x-1 transition-all relative z-10 group-hover:text-purple-400 transition-colors"></i>
+                        </a>
+                    </div>
+
+                    <div class="glass-card p-7 group relative">
+                        <h2 class="text-xs font-bold mb-5 uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors relative z-10">Base Station</h2>
+                        <a href="https://maps.google.com/?cid=5032838451450215077&entry=gps" target="_blank" class="flex items-center gap-4 bg-zinc-900/30 ring-1 ring-white/5 hover:ring-rose-500/30 hover:bg-rose-500/5 transition-all rounded-2xl p-4 group relative z-10">
+                            <div class="w-12 h-12 bg-zinc-800/50 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform ring-1 ring-white/5 relative z-10 group-hover:bg-zinc-800 Transition-colors group-hover:ring-rose-500/30 group-hover:bg-rose-500/5 Transition-colors shadow-[0_0_15px_rgba(244, 63, 94, 0.05)] group-hover:shadow-[0_0_20px_rgba(244, 63, 94, 0.2)] transition-shadow duration-500">
+                                <span class="relative z-10">🏫</span>
+                            </div>
+                            <div class="flex-1 min-w-0 relative z-10">
+                                <div class="font-bold text-zinc-200 text-sm truncate group-hover:text-white transition-colors relative z-10">Marĝilon IM</div>
+                                <div class="text-zinc-500 text-xs mt-0.5 relative z-10 group-hover:text-zinc-400 Transition-colors">Class: 8-Yellow</div>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-zinc-600 group-hover:text-rose-400 text-xs transition-colors relative z-10 group-hover:text-purple-400 Transition-colors"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div> </div> <div class="mt-16 flex flex-col items-center justify-center gap-4 relative z-10 group">
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent group-hover:via-purple-800 Transition-all duration-1000"></div>
+            <div class="text-center text-zinc-600 text-xs font-mono flex items-center gap-2 relative z-10 group-hover:text-zinc-500 transition-colors">
+                <span>Last update by </span>
+                <span class="text-purple-500 font-bold group-hover:text-purple-400 transition-colors relative z-10">BEHRUZ</span>
+                <span class="relative z-10"></span>
+                <span class="text-zinc-800 relative z-10">|</span>
+                <span class="relative z-10">14.04.2026</span> 
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+    const percent = document.getElementById("percent");
+    const text = document.getElementById("loading-text");
+    const loader = document.getElementById("loader");
+
+    let value = 0;
+
+    const messages = [
+        "Initializing...",
+        "Loading...",
+        "Syncing...",
+        "Starting..."
+    ];
+
+    const interval = setInterval(() => {
+        // Быстрое заполнение
+        value += Math.random() * 35;
+
+        if (value >= 100) {
+            value = 100;
+            clearInterval(interval);
+
+            percent.textContent = "100%";
+            text.textContent = "Access Granted";
+
+            setTimeout(() => {
+                loader.style.opacity = "0";
+                loader.style.transition = "opacity 0.4s ease";
+
+                setTimeout(() => loader.remove(), 400);
+            }, 300);
+        }
+
+        percent.textContent = Math.floor(value) + "%";
+        text.textContent = messages[Math.floor(Math.random() * messages.length)];
+
+    }, 120);
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
