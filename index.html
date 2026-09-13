@@ -293,10 +293,10 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative">
+        <div class="grid grid-cols-1 gap-8 relative">
 
-            <!-- Left Column -->
-            <div class="lg:col-span-5 space-y-8 relative">
+            <!-- Content Area Stacked -->
+            <div class="space-y-8 relative">
                 
                 <div class="glass-card p-7 group">
                     <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
@@ -337,7 +337,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+                
                     <div class="glass-card p-7 group relative">
                         <h2 class="text-xs font-bold mb-5 uppercase tracking-widest text-zinc-500 group-hover:text-zinc-400 transition-colors relative z-10" data-i18n="network">Network</h2>
                         
@@ -404,8 +404,8 @@
 
             </div>
 
-            <!-- Right Column -->
-            <div class="lg:col-span-7 space-y-8 relative">
+            <!-- Content Area Stacked -->
+            <div class="space-y-8 relative">
                 
                 <div class="glass-card p-7 group">
                     <h2 class="text-sm font-bold mb-6 flex items-center gap-3 uppercase tracking-widest text-zinc-400">
@@ -414,6 +414,7 @@
                     </h2>
                     <div class="space-y-4">
 
+                        <!-- Boards System -->
                         <div class="bg-zinc-900/40 rounded-2xl p-5 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-all group relative overflow-hidden">
                             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"
                                 style="background: radial-gradient(400px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(59,130,246,0.15), transparent 60%);">
@@ -423,7 +424,6 @@
                                     <div class="flex items-center gap-3 mb-2 flex-wrap">
                                         <span class="text-lg font-bold text-white" data-i18n="boardsTitle">Boards System</span>
                                         <span class="text-[10px] sm:text-xs text-white bg-white/10 px-2.5 py-1 rounded-md ring-1 ring-white/40 shadow-[0_0_12px_rgba(255,255,255,0.4)] font-bold uppercase tracking-wider" data-i18n="mainProjectBadge">● Main Project</span>
-                                        <span class="text-[10px] sm:text-xs text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-md ring-1 ring-cyan-500/20" data-i18n="newBadge">● New</span>
                                         <span class="text-[10px] sm:text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-md ring-1 ring-green-500/20" data-i18n="activeBadge">● Active</span>
                                     </div>
                                     <p class="text-sm text-zinc-400 leading-relaxed max-w-md" data-i18n="boardsDesc">
@@ -438,6 +438,31 @@
                             </div>
                         </div>
 
+                        <!-- IM School Certificates -->
+                        <div class="bg-zinc-900/40 rounded-2xl p-5 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-all group relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"
+                                style="background: radial-gradient(400px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(16,185,129,0.15), transparent 60%);">
+                            </div>
+                            <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div>
+                                    <div class="flex items-center gap-3 mb-2 flex-wrap">
+                                        <span class="text-lg font-bold text-white" data-i18n="certTitle">IM School Certificates</span>
+                                        <span class="text-[10px] sm:text-xs text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded-md ring-1 ring-cyan-500/20" data-i18n="newBadge">● New</span>
+                                        <span class="text-[10px] sm:text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-md ring-1 ring-green-500/20" data-i18n="activeBadge">● Active</span>
+                                    </div>
+                                    <p class="text-sm text-zinc-400 leading-relaxed max-w-md" data-i18n="certDesc">
+                                        List of foreign language certificates such as IELTS, CEFR of IM school.
+                                    </p>
+                                </div>
+                                <a href="https://certificates.abehr.uz" target="_blank"
+                                class="glare-button shrink-0 flex items-center gap-2 bg-white text-black hover:bg-emerald-400 hover:text-black font-bold py-2.5 px-5 rounded-xl transition-all duration-300 active:scale-95 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(16,185,129,0.4)]">
+                                    <span class="text-xs uppercase tracking-widest" data-i18n="openBtn">Open</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Leaderboard System -->
                         <div class="bg-zinc-900/40 rounded-2xl p-5 ring-1 ring-white/5 hover:bg-zinc-900/80 transition-all group relative overflow-hidden">
                             <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none"
                                 style="background: radial-gradient(400px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(168,85,247,0.15), transparent 60%);">
@@ -565,7 +590,7 @@
                 <span data-i18n="lastUpdate">Last update by </span>
                 <span class="text-purple-500 font-bold group-hover:text-purple-400 transition-colors relative z-10">BEHRUZ</span>
                 <span class="text-zinc-800 relative z-10">|</span>
-                <span class="relative z-10">23.05.2026</span> 
+                <span class="relative z-10">13.09.2026</span> 
             </div>
         </div>
         
@@ -590,11 +615,13 @@
             nearSchool: 'near "Qõshtepa IM"',
             projects: "Projects",
             boardsTitle: "Boards System",
+            certTitle: "IM School Certificates",
             leaderboardTitle: "Leaderboard System",
             mainProjectBadge: "● Main Project",
             activeBadge: "● Active",
             newBadge: "● New",
             leaderboardDesc: "A simple and fast system to track, manage, and display user scores in real-time.",
+            certDesc: "List of foreign language certificates such as IELTS, CEFR of IM school.",
             boardsDesc: "Create your own board, manage scores, and share it instantly. No registration required.",
             openBtn: "Open",
             techStack: "Tech Stack & Skills",
@@ -641,11 +668,13 @@
             nearSchool: 'возле "Qõshtepa IM"',
             projects: "Проекты",
             boardsTitle: "Система списков",
+            certTitle: "Сертификаты школы IM",
             leaderboardTitle: "Список лидеров",
             mainProjectBadge: "● Основной проект",
             activeBadge: "● Активен",
             newBadge: "● Новый",
             leaderboardDesc: "Простая и быстрая система для отслеживания, управления и показа результатов пользователей в реальном времени.",
+            certDesc: "Список сертификатов по иностранным языкам такие как IELTS, CEFR школы IM.",
             boardsDesc: "Создайте свой список, управляйте баллами и мгновенно делитесь ею. Регистрация не требуется.",
             openBtn: "Открыть",
             techStack: "Технологии и Навыки",
@@ -692,11 +721,13 @@
             nearSchool: '"Qo\'shtepa IM" yaqinida',
             projects: "Loyihalar",
             boardsTitle: "Ro'yxatlar tizimi",
+            certTitle: "IM maktabi sertifikatlari",
             leaderboardTitle: "Liderlar ro'yxati",
             mainProjectBadge: "● Asosiy loyiha",
             activeBadge: "● Faol",
             newBadge: "● Yangi",
             leaderboardDesc: "Foydalanuvchilar natijalarini real vaqtda kuzatish, boshqarish va ko'rsatish uchun oddiy va tezkor tizim.",
+            certDesc: "IM maktabining IELTS, CEFR kabi chet tili sertifikatlari ro'yxati.",
             boardsDesc: "O'z doskangizni yarating, ballarni boshqaring va tezda ulashing. Ro'yxatdan o'tish talab qilinmaydi.",
             openBtn: "Ochish",
             techStack: "Texnologiyalar va Ko'nikmalar",
